@@ -1,17 +1,22 @@
 # Task Management API PRD
 
 ## Overview
+
 A REST API for managing personal tasks. Each user can sign up, log in, and manage only their own tasks. The API is meant for learning, but the structure should follow real-world backend practices.
 
 ## Product Goal
+
 Build a secure, clean, and maintainable backend service that lets users:
+
 - create accounts
 - log in with JWT
 - create, read, update, and delete tasks
 - access only their own task data
 
 ## What the API Will Do
+
 The API will act as the backend for a task manager app. It will:
+
 - authenticate users with signup and login
 - issue JWT tokens after successful login
 - store users and tasks in MongoDB
@@ -20,7 +25,9 @@ The API will act as the backend for a task manager app. It will:
 - validate incoming data and return helpful errors
 
 ## Core Features
+
 ### Authentication
+
 - User signup
 - User login
 - Password hashing
@@ -28,6 +35,7 @@ The API will act as the backend for a task manager app. It will:
 - Protected routes using auth middleware
 
 ### Tasks
+
 - Create a task
 - Get all tasks for the logged-in user
 - Get one task by id
@@ -36,18 +44,22 @@ The API will act as the backend for a task manager app. It will:
 - Restrict access to the task owner only
 
 ### Validation and Errors
+
 - Validate required fields
 - Return clear 400/401/403/404 responses
 - Centralized error handling
 
 ## Data Model Summary
+
 ### User
+
 - name
 - email
 - password
 - timestamps
 
 ### Task
+
 - title
 - description
 - status
@@ -56,7 +68,9 @@ The API will act as the backend for a task manager app. It will:
 - timestamps
 
 ## Scope for Version 1
+
 In the first version, the API should support:
+
 - user registration and login
 - JWT authentication
 - task CRUD
@@ -64,7 +78,9 @@ In the first version, the API should support:
 - basic validation and error handling
 
 ## Non-Goals for Version 1
+
 Not needed yet:
+
 - frontend UI
 - task sharing between users
 - admin dashboard
@@ -73,7 +89,9 @@ Not needed yet:
 - recurring tasks
 
 ## Success Criteria
+
 The project is successful if:
+
 - a user can register and log in
 - a valid token is required for task routes
 - one user cannot read or edit another user's tasks
@@ -81,6 +99,7 @@ The project is successful if:
 - the code is organized and easy to extend
 
 ## Suggested Learning Path
+
 1. Project setup and server bootstrap
 2. MongoDB connection and environment config
 3. User and task models
@@ -90,4 +109,5 @@ The project is successful if:
 7. Testing and polish
 
 ## Notes
+
 This API should be built as if it were a small production backend, not just a demo. The main learning goal is to understand how authentication, authorization, validation, and data modeling fit together in a real Node.js backend.

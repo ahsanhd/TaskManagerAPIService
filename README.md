@@ -7,6 +7,7 @@ This API is designed to behave like a real task management backend: users can si
 ## What This Project Will Do
 
 The API will:
+
 - let users register and log in
 - issue JWT tokens after login
 - store users and tasks in MongoDB
@@ -17,6 +18,7 @@ The API will:
 ## Product Goal
 
 The goal is to build a secure, clean, and maintainable backend service that demonstrates real-world backend patterns:
+
 - authentication
 - authorization
 - validation
@@ -29,6 +31,7 @@ The goal is to build a secure, clean, and maintainable backend service that demo
 The project is in the foundation phase.
 
 Completed so far:
+
 - Node.js project setup
 - Express server bootstrap
 - TypeScript runtime setup with `tsx`
@@ -77,6 +80,7 @@ app/
 ## API Scope for Version 1
 
 Version 1 will include:
+
 - user signup
 - user login
 - JWT authentication
@@ -85,6 +89,7 @@ Version 1 will include:
 - validation and helpful error responses
 
 Not included yet:
+
 - frontend UI
 - task sharing
 - notifications
@@ -95,14 +100,18 @@ Not included yet:
 ## Planned Data Models
 
 ### User
+
 A user document will contain:
+
 - name
 - email
 - password
 - timestamps
 
 ### Task
+
 A task document will contain:
+
 - title
 - description
 - status
@@ -113,10 +122,12 @@ A task document will contain:
 ## Planned Routes
 
 ### Auth routes
+
 - `POST /api/auth/signup`
 - `POST /api/auth/login`
 
 ### Task routes
+
 - `GET /api/tasks`
 - `POST /api/tasks`
 - `GET /api/tasks/:id`
@@ -128,6 +139,7 @@ A task document will contain:
 Create a `.env` file in the project root based on `.env.example`.
 
 Required values:
+
 - `PORT` - the port the server should run on
 - `MONGO_URI` - MongoDB connection string
 
