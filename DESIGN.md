@@ -37,10 +37,10 @@ That is how real backend projects stay maintainable.
 This is the part that receives HTTP requests.
 It listens for routes like `POST /api/auth/login` or `GET /api/tasks`.
 
-### 2. MongoDB database
+### 2. SQL database
 
 This is where we store users and tasks.
-MongoDB is a document database, so data is saved as flexible JSON-like documents.
+For this version we are using SQLite through Prisma, which gives us a relational database without needing a separate database server.
 
 ### 3. Authentication
 
@@ -91,16 +91,16 @@ It will hold shared middleware and route registration.
 ### `app/src/server.ts`
 
 Starts the application.
-It loads environment variables, connects to MongoDB, and begins listening on the port.
+It loads environment variables, connects to the database, and begins listening on the port.
 
 ### `app/src/config/`
 
 Holds setup code for outside services.
-Right now this will include the MongoDB connection file.
+Right now this includes the Prisma database helper.
 
 ### `app/src/models/`
 
-Holds MongoDB schemas and models.
+Holds database models and schema-related code.
 These define the structure of users and tasks.
 
 ### `app/src/controllers/`
@@ -214,7 +214,7 @@ That means:
 - user A cannot edit user B's task
 - user A cannot delete user B's task
 
-We will enforce this by storing the logged-in user's id in the JWT and linking each task to a user id in MongoDB.
+We will enforce this by storing the logged-in user's id in the JWT and linking each task to a user id in the SQL database.
 
 ## Suggested First Version Behavior
 
@@ -257,7 +257,7 @@ This is the safest order to build the project.
 The point of this project is not just to finish an app.
 The point is to understand how a real backend works:
 
-- how data is modeled
+- how data is modeled in SQL
 - how login systems work
 - how security rules are enforced
 - how requests move through controllers and middleware

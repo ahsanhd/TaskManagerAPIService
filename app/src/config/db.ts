@@ -1,13 +1,19 @@
-import mongoose from "mongoose";
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    log: ["error", "warn"],
+  });
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
 export async function connectDB() {
-  const mongoUri = process.env.MONGO_URI;
-
-  if (!mongoUri) {
-    throw new Error("MONGO_URI is not defined in the environment");
-  }
-
-  await mongoose.connect(mongoUri, {
-    serverSelectionTimeoutMS: 5000,
-  });
+  await prisma.$connect();
 }

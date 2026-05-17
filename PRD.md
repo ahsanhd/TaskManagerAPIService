@@ -19,7 +19,7 @@ The API will act as the backend for a task manager app. It will:
 
 - authenticate users with signup and login
 - issue JWT tokens after successful login
-- store users and tasks in MongoDB
+- store users and tasks in a SQL database through Prisma
 - protect task routes so only authenticated users can use them
 - ensure each user can only see and change their own tasks
 - validate incoming data and return helpful errors
@@ -101,7 +101,7 @@ The project is successful if:
 ## Suggested Learning Path
 
 1. Project setup and server bootstrap
-2. MongoDB connection and environment config
+2. Database connection and environment config
 3. User and task models
 4. Auth routes and JWT
 5. Protected task routes
