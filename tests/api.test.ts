@@ -93,6 +93,15 @@ describe("Task Management API", () => {
     expect(response.body.message).toBe("Missing or invalid authorization token");
   });
 
+  it("rejects malformed auth tokens", async () => {
+    const response = await request(app)
+      .get("/api/tasks")
+      .set({ Authorization: "Bearer not-a-real-token" });
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe("Invalid or expired authorization token");
+  });
+
   it("enforces task ownership and CRUD rules", async () => {
     const signupResponse = await request(app).post("/api/auth/signup").send({
       name: "Owner User",
@@ -173,6 +182,27 @@ describe("Task Management API", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("Title must not exceed 120 characters");
+  });
+
+  it("rejects empty task titles", async () => {
+    const signupResponse = await request(app).post("/api/auth/signup").send({
+      name: "Title Validator",
+      email: "titlevalidator@example.com",
+      password: "Password123!",
+    });
+
+    const authHeaders = {
+      Authorization: `Bearer ${signupResponse.body.token}`,
+    };
+
+    const response = await request(app).post("/api/tasks").set(authHeaders).send({
+      title: "   ",
+      description: "Empty title should fail",
+      status: "PENDING",
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Title is required");
   });
 
   it("rejects invalid task dates", async () => {
