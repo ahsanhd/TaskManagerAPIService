@@ -15,11 +15,15 @@ export async function signup(req: Request, res: Response) {
     };
 
     if (!name || !email || !password) {
-      return res.status(400).json({ message: "Name, email, and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Name, email, and password are required" });
     }
 
     if (!isValidEmail(email)) {
-      return res.status(400).json({ message: "Please provide a valid email address" });
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid email address" });
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -27,7 +31,9 @@ export async function signup(req: Request, res: Response) {
     });
 
     if (existingUser) {
-      return res.status(409).json({ message: "A user with this email already exists" });
+      return res
+        .status(409)
+        .json({ message: "A user with this email already exists" });
     }
 
     const hashedPassword = await hashPassword(password);
@@ -56,7 +62,9 @@ export async function signup(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Signup error:", error);
-    return res.status(500).json({ message: "Something went wrong while creating the user" });
+    return res
+      .status(500)
+      .json({ message: "Something went wrong while creating the user" });
   }
 }
 
@@ -68,7 +76,9 @@ export async function login(req: Request, res: Response) {
     };
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
     }
 
     const user = await prisma.user.findUnique({
@@ -100,6 +110,8 @@ export async function login(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ message: "Something went wrong while logging in" });
+    return res
+      .status(500)
+      .json({ message: "Something went wrong while logging in" });
   }
 }

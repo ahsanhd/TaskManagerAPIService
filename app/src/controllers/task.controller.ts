@@ -15,7 +15,11 @@ function parseStatus(status: unknown) {
     return undefined;
   }
 
-  if (status === "PENDING" || status === "IN_PROGRESS" || status === "COMPLETED") {
+  if (
+    status === "PENDING" ||
+    status === "IN_PROGRESS" ||
+    status === "COMPLETED"
+  ) {
     return status;
   }
 

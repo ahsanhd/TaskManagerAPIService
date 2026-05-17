@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { login, signup } from "../controllers/auth.controller.js";
 import { asyncHandler } from "../utils/async-handler.js";
-import { validateLoginBody, validateSignupBody } from "../middlewares/validation.middleware.js";
+import {
+  validateLoginBody,
+  validateSignupBody,
+} from "../middlewares/validation.middleware.js";
 
 const router = Router();
 

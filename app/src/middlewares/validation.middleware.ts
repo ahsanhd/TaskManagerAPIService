@@ -9,7 +9,12 @@ function isValidEmail(email: string) {
 }
 
 function isValidTaskStatus(status: unknown) {
-  return status === undefined || status === "PENDING" || status === "IN_PROGRESS" || status === "COMPLETED";
+  return (
+    status === undefined ||
+    status === "PENDING" ||
+    status === "IN_PROGRESS" ||
+    status === "COMPLETED"
+  );
 }
 
 function isValidDate(value: unknown) {
@@ -46,8 +51,16 @@ function normalizeOptionalText(value: unknown) {
   return normalizedValue.length > 0 ? normalizedValue : null;
 }
 
-export function validateSignupBody(req: Request, _res: Response, next: NextFunction) {
-  const { name, email, password } = req.body as { name?: string; email?: string; password?: string };
+export function validateSignupBody(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
+  const { name, email, password } = req.body as {
+    name?: string;
+    email?: string;
+    password?: string;
+  };
 
   const normalizedName = normalizeRequiredText(name);
   if (!normalizedName || normalizedName.length < 2) {
@@ -59,7 +72,9 @@ export function validateSignupBody(req: Request, _res: Response, next: NextFunct
   }
 
   if (typeof password !== "string" || password.length < 8) {
-    return next(new AppError(400, "Password must be at least 8 characters long"));
+    return next(
+      new AppError(400, "Password must be at least 8 characters long"),
+    );
   }
 
   req.body.name = normalizedName;
@@ -68,7 +83,11 @@ export function validateSignupBody(req: Request, _res: Response, next: NextFunct
   return next();
 }
 
-export function validateLoginBody(req: Request, _res: Response, next: NextFunction) {
+export function validateLoginBody(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
   const { email, password } = req.body as { email?: string; password?: string };
 
   if (typeof email !== "string" || typeof password !== "string") {
@@ -80,7 +99,9 @@ export function validateLoginBody(req: Request, _res: Response, next: NextFuncti
   }
 
   if (password.length < 8) {
-    return next(new AppError(400, "Password must be at least 8 characters long"));
+    return next(
+      new AppError(400, "Password must be at least 8 characters long"),
+    );
   }
 
   req.body.email = email.trim().toLowerCase();
@@ -88,7 +109,11 @@ export function validateLoginBody(req: Request, _res: Response, next: NextFuncti
   return next();
 }
 
-export function validateTaskCreateBody(req: Request, _res: Response, next: NextFunction) {
+export function validateTaskCreateBody(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
   const { title, description, status, dueDate } = req.body as {
     title?: string;
     description?: string;
@@ -102,20 +127,37 @@ export function validateTaskCreateBody(req: Request, _res: Response, next: NextF
   }
 
   if (normalizedTitle.length > taskTitleMaxLength) {
-    return next(new AppError(400, `Title must not exceed ${taskTitleMaxLength} characters`));
+    return next(
+      new AppError(
+        400,
+        `Title must not exceed ${taskTitleMaxLength} characters`,
+      ),
+    );
   }
 
   const normalizedDescription = normalizeOptionalText(description);
   if (normalizedDescription === null) {
-    return next(new AppError(400, "Description must be a non-empty string when provided"));
+    return next(
+      new AppError(400, "Description must be a non-empty string when provided"),
+    );
   }
 
-  if (normalizedDescription && normalizedDescription.length > taskDescriptionMaxLength) {
-    return next(new AppError(400, `Description must not exceed ${taskDescriptionMaxLength} characters`));
+  if (
+    normalizedDescription &&
+    normalizedDescription.length > taskDescriptionMaxLength
+  ) {
+    return next(
+      new AppError(
+        400,
+        `Description must not exceed ${taskDescriptionMaxLength} characters`,
+      ),
+    );
   }
 
   if (!isValidTaskStatus(status)) {
-    return next(new AppError(400, "Status must be PENDING, IN_PROGRESS, or COMPLETED"));
+    return next(
+      new AppError(400, "Status must be PENDING, IN_PROGRESS, or COMPLETED"),
+    );
   }
 
   if (!isValidDate(dueDate)) {
@@ -128,7 +170,11 @@ export function validateTaskCreateBody(req: Request, _res: Response, next: NextF
   return next();
 }
 
-export function validateTaskUpdateBody(req: Request, _res: Response, next: NextFunction) {
+export function validateTaskUpdateBody(
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
   const { title, description, status, dueDate } = req.body as {
     title?: string;
     description?: string;
@@ -143,7 +189,12 @@ export function validateTaskUpdateBody(req: Request, _res: Response, next: NextF
     }
 
     if (normalizedTitle.length > taskTitleMaxLength) {
-      return next(new AppError(400, `Title must not exceed ${taskTitleMaxLength} characters`));
+      return next(
+        new AppError(
+          400,
+          `Title must not exceed ${taskTitleMaxLength} characters`,
+        ),
+      );
     }
 
     req.body.title = normalizedTitle;
@@ -152,18 +203,33 @@ export function validateTaskUpdateBody(req: Request, _res: Response, next: NextF
   if (description !== undefined) {
     const normalizedDescription = normalizeOptionalText(description);
     if (normalizedDescription === null) {
-      return next(new AppError(400, "Description must be a non-empty string when provided"));
+      return next(
+        new AppError(
+          400,
+          "Description must be a non-empty string when provided",
+        ),
+      );
     }
 
-    if (normalizedDescription && normalizedDescription.length > taskDescriptionMaxLength) {
-      return next(new AppError(400, `Description must not exceed ${taskDescriptionMaxLength} characters`));
+    if (
+      normalizedDescription &&
+      normalizedDescription.length > taskDescriptionMaxLength
+    ) {
+      return next(
+        new AppError(
+          400,
+          `Description must not exceed ${taskDescriptionMaxLength} characters`,
+        ),
+      );
     }
 
     req.body.description = normalizedDescription;
   }
 
   if (!isValidTaskStatus(status)) {
-    return next(new AppError(400, "Status must be PENDING, IN_PROGRESS, or COMPLETED"));
+    return next(
+      new AppError(400, "Status must be PENDING, IN_PROGRESS, or COMPLETED"),
+    );
   }
 
   if (!isValidDate(dueDate)) {

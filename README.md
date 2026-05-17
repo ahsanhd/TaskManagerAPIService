@@ -184,6 +184,30 @@ npm install
 npm run dev
 ```
 
+## Deployment
+
+This project is prepared for Docker-based deployment on Render.
+
+Deployment files:
+- `Dockerfile`
+- `render.yaml`
+- `.dockerignore`
+
+What the deployment setup does:
+- builds the app inside a Node.js Docker image
+- creates the Prisma client during the image build
+- mounts a persistent disk at `/var/data`
+- stores the SQLite database at `file:/var/data/dev.db`
+- generates a production `JWT_SECRET` on Render
+
+If you deploy on Render:
+1. Create a new Web Service from this GitHub repo.
+2. Let Render use the included `render.yaml` or the Dockerfile directly.
+3. Keep the persistent disk enabled.
+4. Make sure `JWT_SECRET` is generated or set in the service environment.
+
+This is a proper small-project deployment path because the data survives container restarts and the app runs from a container image instead of your local machine.
+
 ## Request Flow
 
 A request will move through the system like this:

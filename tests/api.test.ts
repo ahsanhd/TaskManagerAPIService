@@ -44,7 +44,9 @@ describe("Task Management API", () => {
     });
 
     expect(response.status).toBe(400);
-    expect(response.body.message).toContain("Name must be at least 2 characters long");
+    expect(response.body.message).toContain(
+      "Name must be at least 2 characters long",
+    );
   });
 
   it("rejects duplicate signup emails", async () => {
@@ -63,7 +65,9 @@ describe("Task Management API", () => {
     });
 
     expect(duplicateResponse.status).toBe(409);
-    expect(duplicateResponse.body.message).toBe("A user with this email already exists");
+    expect(duplicateResponse.body.message).toBe(
+      "A user with this email already exists",
+    );
   });
 
   it("signs up, logs in, and returns tokens", async () => {
@@ -90,7 +94,9 @@ describe("Task Management API", () => {
     const response = await request(app).get("/api/tasks");
 
     expect(response.status).toBe(401);
-    expect(response.body.message).toBe("Missing or invalid authorization token");
+    expect(response.body.message).toBe(
+      "Missing or invalid authorization token",
+    );
   });
 
   it("rejects malformed auth tokens", async () => {
@@ -99,7 +105,9 @@ describe("Task Management API", () => {
       .set({ Authorization: "Bearer not-a-real-token" });
 
     expect(response.status).toBe(401);
-    expect(response.body.message).toBe("Invalid or expired authorization token");
+    expect(response.body.message).toBe(
+      "Invalid or expired authorization token",
+    );
   });
 
   it("enforces task ownership and CRUD rules", async () => {
@@ -132,7 +140,9 @@ describe("Task Management API", () => {
 
     const taskId = createResponse.body.task.id;
 
-    const readResponse = await request(app).get(`/api/tasks/${taskId}`).set(authHeaders);
+    const readResponse = await request(app)
+      .get(`/api/tasks/${taskId}`)
+      .set(authHeaders);
     expect(readResponse.status).toBe(200);
     expect(readResponse.body.task.id).toBe(taskId);
 
@@ -145,7 +155,9 @@ describe("Task Management API", () => {
     expect(updateResponse.body.task.title).toBe("Updated task");
     expect(updateResponse.body.task.status).toBe("COMPLETED");
 
-    const deleteResponse = await request(app).delete(`/api/tasks/${taskId}`).set(authHeaders);
+    const deleteResponse = await request(app)
+      .delete(`/api/tasks/${taskId}`)
+      .set(authHeaders);
     expect(deleteResponse.status).toBe(204);
 
     const secondUserSignup = await request(app).post("/api/auth/signup").send({
@@ -158,7 +170,9 @@ describe("Task Management API", () => {
       Authorization: `Bearer ${secondUserSignup.body.token}`,
     };
 
-    const forbiddenRead = await request(app).get(`/api/tasks/${taskId}`).set(secondUserHeaders);
+    const forbiddenRead = await request(app)
+      .get(`/api/tasks/${taskId}`)
+      .set(secondUserHeaders);
     expect(forbiddenRead.status).toBe(404);
     expect(forbiddenRead.body.message).toBe("Task not found");
   });
@@ -174,11 +188,14 @@ describe("Task Management API", () => {
       Authorization: `Bearer ${signupResponse.body.token}`,
     };
 
-    const response = await request(app).post("/api/tasks").set(authHeaders).send({
-      title: "x".repeat(121),
-      description: "   ",
-      status: "INVALID",
-    });
+    const response = await request(app)
+      .post("/api/tasks")
+      .set(authHeaders)
+      .send({
+        title: "x".repeat(121),
+        description: "   ",
+        status: "INVALID",
+      });
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("Title must not exceed 120 characters");
@@ -195,11 +212,14 @@ describe("Task Management API", () => {
       Authorization: `Bearer ${signupResponse.body.token}`,
     };
 
-    const response = await request(app).post("/api/tasks").set(authHeaders).send({
-      title: "   ",
-      description: "Empty title should fail",
-      status: "PENDING",
-    });
+    const response = await request(app)
+      .post("/api/tasks")
+      .set(authHeaders)
+      .send({
+        title: "   ",
+        description: "Empty title should fail",
+        status: "PENDING",
+      });
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("Title is required");
@@ -216,12 +236,15 @@ describe("Task Management API", () => {
       Authorization: `Bearer ${signupResponse.body.token}`,
     };
 
-    const response = await request(app).post("/api/tasks").set(authHeaders).send({
-      title: "Date task",
-      description: "Testing an invalid date",
-      dueDate: "not-a-real-date",
-      status: "PENDING",
-    });
+    const response = await request(app)
+      .post("/api/tasks")
+      .set(authHeaders)
+      .send({
+        title: "Date task",
+        description: "Testing an invalid date",
+        dueDate: "not-a-real-date",
+        status: "PENDING",
+      });
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("Due date must be a valid date string");
@@ -238,11 +261,14 @@ describe("Task Management API", () => {
       Authorization: `Bearer ${firstUserSignup.body.token}`,
     };
 
-    const taskResponse = await request(app).post("/api/tasks").set(firstUserHeaders).send({
-      title: "Protected task",
-      description: "Only owner should touch this",
-      status: "PENDING",
-    });
+    const taskResponse = await request(app)
+      .post("/api/tasks")
+      .set(firstUserHeaders)
+      .send({
+        title: "Protected task",
+        description: "Only owner should touch this",
+        status: "PENDING",
+      });
 
     const secondUserSignup = await request(app).post("/api/auth/signup").send({
       name: "Owner Two",
