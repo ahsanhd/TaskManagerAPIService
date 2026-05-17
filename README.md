@@ -34,6 +34,8 @@ Completed so far:
 
 - user signup and login endpoints
 - password hashing and JWT token generation
+- request validation middleware
+- centralized error handling
 - Node.js project setup
 - Express server bootstrap
 - TypeScript runtime setup with `tsx`
