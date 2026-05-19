@@ -208,6 +208,62 @@ If you deploy on Render:
 
 This is a proper small-project deployment path because the data survives container restarts and the app runs from a container image instead of your local machine.
 
+## Version 2 Local Stack
+
+To see Redis, Kafka, and the proxy layer together on your machine, use the v2 Docker Compose file:
+
+```bash
+docker compose -f docker-compose.v2.yml up --build
+```
+
+What comes up in that stack:
+- the API container
+- Redis for cache
+- Kafka for event publishing
+- Zookeeper for Kafka coordination
+- Nginx as the front proxy/load-balancer entry point on port `8080`
+
+What you can observe in that stack:
+- repeated task list requests can come from Redis cache
+- task changes publish Kafka events when the broker is reachable
+- Nginx is the single entry point for the app instead of hitting the API container directly
+
+## Version 2 Direction
+
+Version 2 is where the architecture starts moving toward a distributed system.
+
+The first v2 building blocks are:
+- Redis caching
+- Kafka event publishing
+- a load balancer / reverse proxy layer
+- Kubernetes manifests
+
+The current codebase is now v2-ready in a practical sense:
+- task list reads can use Redis when it is available
+- task writes invalidate cache entries
+- task changes emit Kafka events when Kafka settings are present
+- deployment files can be added on top of the existing app without rewriting the whole project at once
+
+That means you can already see the v2 systems in action locally when Redis and Kafka are running, even before a full microservice split happens.
+
+## Version 2 Direction
+
+Version 2 is where the architecture becomes more distributed.
+
+The first v2 building blocks are:
+- Redis for caching repeated task reads
+- Kafka for task events like created, updated, and deleted
+- a load balancer / reverse proxy layer in front of the app
+- Kubernetes manifests for running the platform in a cluster
+
+The current codebase is now "v2-ready" in a practical sense:
+- task list reads can use Redis when it is available
+- task writes invalidate cache entries
+- task changes emit Kafka events when Kafka is configured
+- deployment files can be added on top of the existing app without rewriting the whole project at once
+
+That means you can see the v2 systems in action locally when Redis and Kafka are running, even before a full service split happens.
+
 ## Request Flow
 
 A request will move through the system like this:

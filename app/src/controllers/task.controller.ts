@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
+import { cacheDelete, cacheGetJson, cacheSetJson } from "../config/cache.js";
 import { prisma } from "../config/db.js";
+import { publishTaskEvent } from "../config/kafka.js";
 
 function getUserId(req: Request, res: Response) {
   if (!req.userId) {
@@ -32,10 +34,18 @@ export async function listTasks(req: Request, res: Response) {
     return;
   }
 
+  const cacheKey = `tasks:${userId}`;
+  const cachedTasks = await cacheGetJson<unknown[]>(cacheKey);
+  if (cachedTasks) {
+    return res.json({ tasks: cachedTasks, source: "cache" });
+  }
+
   const tasks = await prisma.task.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
   });
+
+  await cacheSetJson(cacheKey, tasks, 60);
 
   return res.json({ tasks });
 }
@@ -72,6 +82,13 @@ export async function createTask(req: Request, res: Response) {
       dueDate: dueDate ? new Date(dueDate) : undefined,
       userId,
     },
+  });
+
+  await cacheDelete(`tasks:${userId}`);
+  await publishTaskEvent("task.created", {
+    taskId: task.id,
+    userId,
+    title: task.title,
   });
 
   return res.status(201).json({ task });
@@ -138,6 +155,14 @@ export async function updateTask(req: Request, res: Response) {
     },
   });
 
+  await cacheDelete(`tasks:${userId}`);
+  await publishTaskEvent("task.updated", {
+    taskId: updatedTask.id,
+    userId,
+    title: updatedTask.title,
+    status: updatedTask.status,
+  });
+
   return res.json({ task: updatedTask });
 }
 
@@ -160,6 +185,13 @@ export async function deleteTask(req: Request, res: Response) {
 
   await prisma.task.delete({
     where: { id: existingTask.id },
+  });
+
+  await cacheDelete(`tasks:${userId}`);
+  await publishTaskEvent("task.deleted", {
+    taskId: existingTask.id,
+    userId,
+    title: existingTask.title,
   });
 
   return res.status(204).send();

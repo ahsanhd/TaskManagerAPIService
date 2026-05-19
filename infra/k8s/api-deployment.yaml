@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-management-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-management-api
+  template:
+    metadata:
+      labels:
+        app: task-management-api
+    spec:
+      containers:
+        - name: api
+          image: task-management-api:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DATABASE_URL
+              value: "file:/data/dev.db"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: task-management-api-secrets
+                  key: jwt-secret
+            - name: REDIS_URL
+              value: "redis://redis:6379"
+            - name: KAFKA_BROKERS
+              value: "kafka:9092"
+            - name: KAFKA_CLIENT_ID
+              value: "task-management-api"
+            - name: KAFKA_TASK_TOPIC
+              value: "task-events"
+          volumeMounts:
+            - name: api-data
+              mountPath: /data
+      volumes:
+        - name: api-data
+          persistentVolumeClaim:
+            claimName: task-management-api-pvc
